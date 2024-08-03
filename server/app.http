@@ -1,0 +1,56 @@
+### Login Request
+POST http://localhost:5000/login  
+Content-Type: application/json
+
+{
+  "username": "user",
+  "password": "user"
+}
+
+### Update Quantity for a Product in Carts
+POST http://localhost:5000/Carts/update  
+Content-Type: application/json  
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjExLCJpYXQiOjE3MjI2NzE0ODcsImV4cCI6MTcyMjY3NTA4N30.Vog-AoC3dq_vQWqPdZQIgY0kIMysB09kqEExJ6bWx3g
+
+{
+  "product_id": 1,
+  "quantity": 200
+}
+
+### Retrieve Cart Items
+GET http://localhost:5000/Carts  
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjExLCJpYXQiOjE3MjI2NzE0ODcsImV4cCI6MTcyMjY3NTA4N30.Vog-AoC3dq_vQWqPdZQIgY0kIMysB09kqEExJ6bWx3g
+
+### Delete Product from Cart
+DELETE http://localhost:5000/Carts/1  
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjExLCJpYXQiOjE3MjI2NzE0ODcsImV4cCI6MTcyMjY3NTA4N30.Vog-AoC3dq_vQWqPdZQIgY0kIMysB09kqEExJ6bWx3g
+
+### Clear Cart
+DELETE http://localhost:5000/cartsclear  
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjExLCJpYXQiOjE3MjI2NzE0ODcsImV4cCI6MTcyMjY3NTA4N30.Vog-AoC3dq_vQWqPdZQIgY0kIMysB09kqEExJ6bWx3g
+
+### Register a New User
+POST http://localhost:5000/register  
+Content-Type: application/json
+
+{
+  "username": "newuser",
+  "password": "newpassword"
+}
+
+
+### Retrieve All Products
+GET http://localhost:5000/products  
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjExLCJpYXQiOjE3MjI2NzE0ODcsImV4cCI6MTcyMjY3NTA4N30.Vog-AoC3dq_vQWqPdZQIgY0kIMysB09kqEExJ6bWx3g
+
+
+### Place an Order
+POST http://localhost:5000/orders  
+Content-Type: application/json  
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjExLCJpYXQiOjE3MjI2NzE0ODcsImV4cCI6MTcyMjY3NTA4N30.Vog-AoC3dq_vQWqPdZQIgY0kIMysB09kqEExJ6bWx3g
+
+{
+  "total": 250.0,
+  "status": "Pending"
+}
+

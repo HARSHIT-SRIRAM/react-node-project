@@ -1,0 +1,15 @@
+/* NotFound.css */
+.not-found-container {
+  text-align: center;
+  margin-top: 50px;
+}
+
+.not-found-heading {
+  font-size: 2rem;
+  color: #ff0000;
+}
+
+.not-found-text {
+  font-size: 1.2rem;
+  color: #333;
+}
