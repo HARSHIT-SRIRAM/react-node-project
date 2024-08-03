@@ -17,7 +17,7 @@ const Header = () => {
       const token = Cookies.get("token");
       if (token) {
         await axios.post(
-          "http://localhost:5000/logout",
+          "https://react-node-project-7thy.onrender.com/logout",
           {},
           {
             headers: { Authorization: `Bearer ${token}` },

@@ -16,10 +16,13 @@ const Login = () => {
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post("http://localhost:5000/login", {
-        username,
-        password,
-      });
+      const response = await axios.post(
+        "https://react-node-project-7thy.onrender.com/login",
+        {
+          username,
+          password,
+        }
+      );
       Cookies.set("token", response.data.token, { expires: 1 });
       navigate("/");
     } catch (error) {
@@ -30,10 +33,13 @@ const Login = () => {
   const handleRegister = async (e) => {
     e.preventDefault();
     try {
-      await axios.post("http://localhost:5000/register", {
-        username: registerUsername,
-        password: registerPassword,
-      });
+      await axios.post(
+        "https://react-node-project-7thy.onrender.com/register",
+        {
+          username: registerUsername,
+          password: registerPassword,
+        }
+      );
       // After successful registration, switch to login form
       setIsRegistering(false);
       setError("Registration successful. Please log in.");

@@ -33,9 +33,12 @@ class Cart extends Component {
     }
 
     try {
-      const { data } = await axios.get("http://localhost:5000/carts", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const { data } = await axios.get(
+        "https://react-node-project-7thy.onrender.com/carts",
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
       this.updateCartState(data);
     } catch {
       this.showNotification("Error fetching cart items.");
@@ -53,15 +56,24 @@ class Cart extends Component {
       }
 
       await axios.post(
-        "http://localhost:5000/carts/update",
+        "https://react-node-project-7thy.onrender.com/carts/update",
         { product_id: id, quantity: newQuantity },
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
-      const updatedCart = this.state.cart.map((item) =>
-        item.id === id ? { ...item, quantity: newQuantity } : item
-      );
-      this.updateCartState(updatedCart);
+      // Update cart state locally to reflect changes
+      this.setState((prevState) => {
+        const updatedCart = prevState.cart.map((item) =>
+          item.id === id ? { ...item, quantity: newQuantity } : item
+        );
+        return {
+          cart: updatedCart,
+          total: updatedCart.reduce(
+            (sum, item) => sum + item.price * item.quantity,
+            0
+          ),
+        };
+      });
     } catch {
       this.showNotification("Error updating item quantity.");
     }
@@ -85,12 +97,24 @@ class Cart extends Component {
         return;
       }
 
-      await axios.delete(`http://localhost:5000/carts/${id}`, {
-        headers: { Authorization: `Bearer ${token}` },
+      await axios.delete(
+        `https://react-node-project-7thy.onrender.com/carts/${id}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+
+      this.setState((prevState) => {
+        const updatedCart = prevState.cart.filter((item) => item.id !== id);
+        return {
+          cart: updatedCart,
+          total: updatedCart.reduce(
+            (sum, item) => sum + item.price * item.quantity,
+            0
+          ),
+        };
       });
 
-      const updatedCart = this.state.cart.filter((item) => item.id !== id);
-      this.updateCartState(updatedCart);
       this.showNotification("Item removed successfully.");
     } catch {
       this.showNotification("Error removing item.");
@@ -99,7 +123,9 @@ class Cart extends Component {
 
   handleOrder = async () => {
     if (this.state.total <= 0) {
-      this.showNotification("Add items  into cart");
+      this.showNotification(
+        "Total amount must be greater than zero to place an order."
+      );
       return;
     }
 
@@ -110,20 +136,22 @@ class Cart extends Component {
         return;
       }
 
+      // Place the order
       const orderResponse = await axios.post(
-        "http://localhost:5000/orders",
+        "https://react-node-project-7thy.onrender.com/orders",
         { total: this.state.total, status: "Pending" },
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
-      const clearCartResponse = await axios.delete(
-        "http://localhost:5000/cartsclear",
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
+      if (orderResponse.status === 201) {
+        // Clear the cart
+        await axios.delete(
+          "https://react-node-project-7thy.onrender.com/carts/clear",
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
 
-      if (orderResponse.status === 201 && clearCartResponse.status === 200) {
         this.setState({ cart: [], total: 0 });
 
         if (typeof this.props.onOrderPlaced === "function") {
@@ -134,14 +162,19 @@ class Cart extends Component {
 
         this.showNotification("Order placed successfully.");
       } else {
-        this.showNotification("Order creation failed.");
+        this.showNotification(
+          "Order creation failed. Status code: " + orderResponse.status
+        );
       }
     } catch (error) {
       console.error(
         "Order Error:",
         error.response ? error.response.data : error.message
       );
-      this.showNotification("Order creation failed.");
+      this.showNotification(
+        "Order creation failed: " +
+          (error.response?.data.message || error.message)
+      );
     }
   };
 
@@ -155,37 +188,47 @@ class Cart extends Component {
         {this.state.notification && (
           <p className="notification">{this.state.notification}</p>
         )}
-        <ul className="cart-items">
-          {this.state.cart.map((item) => (
-            <li key={item.id} className="cart-item">
-              <span className="item-name">{item.name}</span>
-              <div className="item-quantity">
-                <button
-                  className="quantity-button"
-                  onClick={() => this.handleIncrease(item.id, item.quantity)}
-                >
-                  +
-                </button>
-                <span>{item.quantity}</span>
-                <button
-                  className="quantity-button"
-                  onClick={() => this.handleDecrease(item.id, item.quantity)}
-                >
-                  -
-                </button>
-              </div>
-              <span className="item-price">${item.price.toFixed(2)}</span>
-              <button
-                className="remove-button"
-                onClick={() => this.handleRemove(item.id)}
-              >
-                Remove
-              </button>
-            </li>
-          ))}
-        </ul>
-        <h2>Total Amount: ${this.state.total.toFixed(2)}</h2>
-        <button onClick={this.handleOrder}>Place Order</button>
+        {this.state.cart.length === 0 ? (
+          <p className="no-items">No items in cart.</p>
+        ) : (
+          <>
+            <ul className="cart-items">
+              {this.state.cart.map((item) => (
+                <li key={item.id} className="cart-item">
+                  <span className="item-name">{item.name}</span>
+                  <div className="item-quantity">
+                    <button
+                      className="quantity-button"
+                      onClick={() =>
+                        this.handleIncrease(item.id, item.quantity)
+                      }
+                    >
+                      +
+                    </button>
+                    <span>{item.quantity}</span>
+                    <button
+                      className="quantity-button"
+                      onClick={() =>
+                        this.handleDecrease(item.id, item.quantity)
+                      }
+                    >
+                      -
+                    </button>
+                  </div>
+                  <span className="item-price">${item.price.toFixed(2)}</span>
+                  <button
+                    className="remove-button"
+                    onClick={() => this.handleRemove(item.id)}
+                  >
+                    Remove
+                  </button>
+                </li>
+              ))}
+            </ul>
+            <h2>Total Amount: ${this.state.total.toFixed(2)}</h2>
+            <button onClick={this.handleOrder}>Place Order</button>
+          </>
+        )}
       </div>
     );
   }

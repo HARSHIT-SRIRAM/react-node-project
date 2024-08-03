@@ -12,7 +12,9 @@ const Product = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/products");
+        const response = await axios.get(
+          "https://react-node-project-7thy.onrender.com/products"
+        );
         setProducts(response.data);
       } catch (error) {
         setError("Error fetching products.");
@@ -33,7 +35,7 @@ const Product = () => {
 
     try {
       await axios.post(
-        "http://localhost:5000/Carts/add",
+        "https://react-node-project-7thy.onrender.com/Carts/add",
         { product_id: product.id, quantity: 1 },
         {
           headers: { Authorization: `Bearer ${token}` },

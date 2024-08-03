@@ -14,9 +14,12 @@ const Order = () => {
         const token = Cookies.get("token");
         if (!token) throw new Error("No token found");
 
-        const response = await axios.get("http://localhost:5000/orders", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        const response = await axios.get(
+          "https://react-node-project-7thy.onrender.com/orders",
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
 
         if (Array.isArray(response.data)) {
           setOrders(response.data);
@@ -38,9 +41,12 @@ const Order = () => {
       const token = Cookies.get("token");
       if (!token) throw new Error("No token found");
 
-      await axios.delete(`http://localhost:5000/orders/${orderId}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      await axios.delete(
+        `https://react-node-project-7thy.onrender.com/orders/${orderId}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
 
       setOrders((prevOrders) =>
         prevOrders.filter((order) => order.id !== orderId)
